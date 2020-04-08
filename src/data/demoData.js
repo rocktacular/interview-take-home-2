@@ -8,9 +8,10 @@ const demoData = [
   { category: "married_kids", state: "TX", family: "Ddd", cars: 3 },
 
   { category: "single", state: "OK", family: "Eee", cars: 1 },
+  { category: "single", state: "OK", family: "Jjj", cars: 1 },
+  { category: "single", state: "OK", family: "Iii", cars: 0 },
   { category: "married", state: "OK", family: "Fff", cars: 2 },
 
-  { category: "single", state: "NM", family: "Iii", cars: 0 },
   { category: "married", state: "NM", family: "Hhh", cars: 1 },
   { category: "married_kids", state: "NM", family: "Ggg", cars: 4 },
 ];
