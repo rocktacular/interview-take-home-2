@@ -12,7 +12,7 @@ const config = {
   row: "category",
   column: "region",
   metric: "sales",
-  // aggregator: "sum",
+  aggregator: "sum",
 };
 
 function App() {

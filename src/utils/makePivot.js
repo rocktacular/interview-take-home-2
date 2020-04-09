@@ -10,33 +10,35 @@ const makePivot = (data, row_pred, col_pred, metric) => {
   const grandTotal = { ...initialAgg };
   data.forEach((item) => {
     // TODO: error handling if row_pred, col_pred, or metric don't exist on each item
+    const rowVal = item[row_pred];
+    const colVal = item[col_pred];
 
     // if row doesnt exist on summary yet
-    if (!summary[item[row_pred]]) {
-      summary[item[row_pred]] = {};
-      rowNames.push(item[row_pred]); // push to rowNames array
+    if (!summary[rowVal]) {
+      summary[rowVal] = {};
+      rowNames.push(rowVal); // push to rowNames array
     }
     // if row.col doesnt exist on summary yet
-    if (!summary[item[row_pred]][item[col_pred]]) {
-      summary[item[row_pred]][item[col_pred]] = { ...initialAgg }; // copy instead of reference
-      colNames.push(item[col_pred]); // push to colNames array
+    if (!summary[rowVal][colVal]) {
+      summary[rowVal][colVal] = { ...initialAgg }; // copy instead of reference
+      colNames.push(colVal); // push to colNames array
     }
 
     // initialize column totals
-    if (!colTotals[item[col_pred]]) {
-      colTotals[item[col_pred]] = { ...initialAgg };
+    if (!colTotals[colVal]) {
+      colTotals[colVal] = { ...initialAgg };
     }
 
     // initialize row totals
-    if (!rowTotals[item[row_pred]]) {
-      rowTotals[item[row_pred]] = { ...initialAgg };
+    if (!rowTotals[rowVal]) {
+      rowTotals[rowVal] = { ...initialAgg };
     }
 
     // add metric value to row.col aggregation
     // SUM
-    summary[item[row_pred]][item[col_pred]].sum += item[metric];
-    colTotals[item[col_pred]].sum += item[metric];
-    rowTotals[item[row_pred]].sum += item[metric];
+    summary[rowVal][colVal].sum += item[metric];
+    colTotals[colVal].sum += item[metric];
+    rowTotals[rowVal].sum += item[metric];
     grandTotal.sum += item[metric];
   });
 
