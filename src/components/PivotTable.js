@@ -31,7 +31,7 @@ const PivotTable = ({
     // create data row
     const rowKey = rowKeyArr.join("-");
     const dataRow = colKeys.map((colName) => {
-      return data[rowKey][colName][aggregator] || 0;
+      return (data[rowKey][colName] && data[rowKey][colName][aggregator]) || 0;
     });
     // assemble with row name (start of arr) and total (end of arr)
     const newRow = [...rowKeyArr].concat(...dataRow);
