@@ -5,9 +5,8 @@ const Row = ({ row, header }) => {
     // header row
     return (
       <tr>
-        <th>Category</th>
-        {row.map((header, index) => (
-          <th key={`th-${index}`}>{header}</th>
+        {row.map((heading, index) => (
+          <th key={`th-${index}`}>{heading}</th>
         ))}
       </tr>
     );
@@ -18,7 +17,7 @@ const Row = ({ row, header }) => {
         {row.map((item, index) => {
           return (
             <td key={`td-${index}`}>
-              {!isNaN(item) ? Math.round(item) : item}
+              {typeof item === "number" ? Math.round(item) : item}
             </td>
           );
         })}

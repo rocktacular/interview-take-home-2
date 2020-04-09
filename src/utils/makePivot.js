@@ -25,7 +25,7 @@ const makePivot = (data, row_pred, col_pred, metric) => {
     // if row doesnt exist on summary yet
     if (!summary[rowVal]) {
       summary[rowVal] = {};
-      rowKeys.push(rowVal); // push to rowKeys array
+      rowKeys.push(itemRowKeys); // push to rowKeys array
     }
     // if row.col doesnt exist on summary yet
     if (!summary[rowVal][colVal]) {
@@ -64,8 +64,6 @@ const makePivot = (data, row_pred, col_pred, metric) => {
   // sort rowKeys and colKeys alpha
   summaryObj.rowKeys = summaryObj.rowKeys.sort();
   summaryObj.colKeys = summaryObj.colKeys.sort();
-
-  console.log("summaryObj", summaryObj);
 
   return summaryObj;
 };

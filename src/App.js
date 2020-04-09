@@ -8,7 +8,7 @@ import "./App.css";
 
 // Pivot Table Config
 // could eventually be selectable from dropdowns and moved into state, then recompute the pivot table on change
-const config = {
+const initConfig = {
   row: ["category", "subCategory"],
   column: "region",
   metric: "sales",
@@ -16,8 +16,9 @@ const config = {
 };
 
 function App() {
+  const [config, setConfig] = useState(initConfig);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({});
 
   useEffect(() => {
     // load data on mount
@@ -31,6 +32,7 @@ function App() {
         config.metric
       );
       // update state with pivot table object
+      console.log("summaryObj", summaryObj);
       setLoading(false);
       setData(summaryObj);
     });
@@ -50,6 +52,7 @@ function App() {
           colTotals={data.colTotals}
           rowTotals={data.rowTotals}
           grandTotal={data.grandTotal}
+          config={config}
         />
       )}
     </div>
