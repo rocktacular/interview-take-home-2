@@ -47,6 +47,9 @@ function App() {
           rowNames={data.rowNames}
           colNames={data.colNames}
           aggregator={config.aggregator}
+          colTotals={data.colTotals}
+          rowTotals={data.rowTotals}
+          grandTotal={data.grandTotal}
         />
       )}
     </div>
