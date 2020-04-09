@@ -16,7 +16,7 @@ const initConfig = {
 };
 
 function App() {
-  const [config, setConfig] = useState(initConfig);
+  const [config] = useState(initConfig);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({});
 
@@ -36,7 +36,7 @@ function App() {
       setLoading(false);
       setData(summaryObj);
     });
-  }, []);
+  }, [config.row, config.column, config.metric]);
 
   return (
     <div className="App">
