@@ -38,12 +38,14 @@ const makePivot = (data, row_pred, col_pred, metric) => {
       colTotals[colVal] = { ...initialAgg };
     }
 
-    // initialize sub total columns
+    // initialize sub total columns if depth > 1
     const subTotalKeys = [...itemRowKeys];
     subTotalKeys.pop(); // subtotals for depth - 1
     const subTotalKeysFlat = subTotalKeys.join("-") + "-" + colVal;
-    if (!colTotals[subTotalKeysFlat]) {
-      colTotals[subTotalKeysFlat] = { ...initialAgg };
+    if (itemRowKeys.length > 1) {
+      if (!colTotals[subTotalKeysFlat]) {
+        colTotals[subTotalKeysFlat] = { ...initialAgg };
+      }
     }
 
     // initialize row totals
@@ -55,9 +57,12 @@ const makePivot = (data, row_pred, col_pred, metric) => {
     // SUM
     summary[rowVal][colVal].sum += item[metric];
     colTotals[colVal].sum += item[metric];
-    colTotals[subTotalKeysFlat].sum += item[metric];
     rowTotals[rowVal].sum += item[metric];
     grandTotal.sum += item[metric];
+    // agg subtotals if depth > 1
+    if (subTotalKeysFlat && itemRowKeys.length > 1) {
+      colTotals[subTotalKeysFlat].sum += item[metric];
+    }
   });
 
   // make colKeys unique using Set
