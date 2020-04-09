@@ -11,37 +11,38 @@ const PivotTable = ({
   grandTotal,
 }) => {
   const renderHeader = () => {
-    return colNames && <Row colNames={[...colNames, "TOTAL"]} />;
+    if (!colNames) return null;
+
+    return <Row colNames={[...colNames, "TOTAL"]} />;
   };
   const renderRows = () => {
-    return (
-      data &&
-      rowNames &&
-      colNames &&
-      rowNames.map((rowName, index) => {
-        return renderRow(rowName, index);
-      })
-    );
+    if (!data || !rowNames || !colNames) return null;
+
+    return rowNames.map((rowName, index) => {
+      return renderRow(rowName, index);
+    });
   };
   const renderRow = (rowName, index) => {
-    // create row of data
-    // start with row name
-    let newRow = [rowName];
-    // push data onto row
+    if (!rowName || !aggregator) return null;
+
+    // create data row
     const dataRow = colNames.map((colName) => {
       return data[rowName][colName] || 0;
     });
-    newRow = newRow.concat(dataRow);
+    // assemble with row name (start of arr) and total (end of arr)
+    const newRow = [rowName].concat(...dataRow);
     newRow.push(rowTotals[rowName]);
     return <Row row={newRow} key={`row-${index}`} aggregator={aggregator} />;
   };
   const renderRowTotals = () => {
-    let newRow = ["TOTAL"];
-    // push data onto row
+    if (!colNames || !colTotals || !grandTotal[aggregator]) return null;
+
+    // create data row
     const dataRow = colNames.map((colName) => {
       return colTotals[colName] || 0;
     });
-    newRow = newRow.concat(dataRow);
+    // assemble with row name (start of arr) and total (end of arr)
+    const newRow = ["TOTAL"].concat(...dataRow);
     newRow.push(grandTotal);
     return <Row row={newRow} key="col-totals" aggregator={aggregator} />;
   };
@@ -49,7 +50,7 @@ const PivotTable = ({
     <div>
       <table>
         <thead>{renderHeader()}</thead>
-        <tbody>{[renderRows(), colTotals && renderRowTotals()]}</tbody>
+        <tbody>{[renderRows(), renderRowTotals()]}</tbody>
       </table>
     </div>
   );
