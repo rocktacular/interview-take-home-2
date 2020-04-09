@@ -38,6 +38,14 @@ const makePivot = (data, row_pred, col_pred, metric) => {
       colTotals[colVal] = { ...initialAgg };
     }
 
+    // initialize sub total columns
+    const subTotalKeys = [...itemRowKeys];
+    subTotalKeys.pop(); // subtotals for depth - 1
+    const subTotalKeysFlat = subTotalKeys.join("-") + "-" + colVal;
+    if (!colTotals[subTotalKeysFlat]) {
+      colTotals[subTotalKeysFlat] = { ...initialAgg };
+    }
+
     // initialize row totals
     if (!rowTotals[rowVal]) {
       rowTotals[rowVal] = { ...initialAgg };
@@ -47,6 +55,7 @@ const makePivot = (data, row_pred, col_pred, metric) => {
     // SUM
     summary[rowVal][colVal].sum += item[metric];
     colTotals[colVal].sum += item[metric];
+    colTotals[subTotalKeysFlat].sum += item[metric];
     rowTotals[rowVal].sum += item[metric];
     grandTotal.sum += item[metric];
   });
