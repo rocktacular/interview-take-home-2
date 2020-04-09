@@ -1,7 +1,7 @@
 import React from "react";
 import Row from "./Row";
 
-const PivotTable = ({ data, rows, columns }) => {
+const PivotTable = ({ data, rows, columns, aggregator }) => {
   const renderHeader = () => {
     return <Row columns={columns} />;
   };
@@ -21,7 +21,7 @@ const PivotTable = ({ data, rows, columns }) => {
       return data[row][col] || 0;
     });
     newRow = newRow.concat(dataRow);
-    return <Row row={newRow} key={`row-${index}`} />;
+    return <Row row={newRow} key={`row-${index}`} aggregator={aggregator} />;
   };
   return (
     <div>

@@ -1,6 +1,6 @@
 import React from "react";
 
-const Row = ({ row, columns }) => {
+const Row = ({ row, columns, aggregator }) => {
   if (columns && columns.length) {
     // header row
     return (
@@ -16,7 +16,12 @@ const Row = ({ row, columns }) => {
     return (
       <tr>
         {row.map((item, index) => {
-          return <td key={`td-${index}`}>{item}</td>;
+          console.log(item);
+          if (index === 0) {
+            return <td key={`td-${index}`}>{item}</td>;
+          } else {
+            return <td key={`td-${index}`}>{Math.round(item[aggregator])}</td>;
+          }
         })}
       </tr>
     );

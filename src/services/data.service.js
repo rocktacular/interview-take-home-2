@@ -1,4 +1,4 @@
-import demoData from "../data/demoData";
+import demoData from "../data/salesData";
 
 const dataService = {
   getData: () => {

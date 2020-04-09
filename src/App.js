@@ -7,10 +7,12 @@ import makePivot from "./utils/makePivot";
 import "./App.css";
 
 // Pivot Table Config
+// could eventually be selectable from dropdowns and moved into state, then recompute the pivot table on change
 const config = {
   row: "category",
-  column: "state",
-  metric: "cars",
+  column: "region",
+  metric: "sales",
+  aggregator: "sum",
 };
 
 function App() {
@@ -22,16 +24,15 @@ function App() {
     setLoading(true);
     DS.getData().then((data) => {
       // create the pivot table from data
-      makePivot(data, config.row, config.column, config.metric).then(
-        (summaryObj) => {
-          // sort rows and columns
-          summaryObj.rows = summaryObj.rows.sort();
-          summaryObj.columns = summaryObj.columns.sort();
-          // update state with pivot table object
-          setLoading(false);
-          setData(summaryObj);
-        }
+      const summaryObj = makePivot(
+        data,
+        config.row,
+        config.column,
+        config.metric
       );
+      // update state with pivot table object
+      setLoading(false);
+      setData(summaryObj);
     });
   }, []);
 
@@ -45,6 +46,7 @@ function App() {
           data={data.summary}
           rows={data.rows}
           columns={data.columns}
+          aggregator={config.aggregator}
         />
       )}
     </div>
