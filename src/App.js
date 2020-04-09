@@ -12,7 +12,7 @@ const config = {
   row: "category",
   column: "region",
   metric: "sales",
-  aggregator: "sum",
+  // aggregator: "sum",
 };
 
 function App() {
@@ -44,8 +44,8 @@ function App() {
       ) : (
         <PivotTable
           data={data.summary}
-          rows={data.rows}
-          columns={data.columns}
+          rowNames={data.rowNames}
+          colNames={data.colNames}
           aggregator={config.aggregator}
         />
       )}

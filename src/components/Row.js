@@ -1,12 +1,12 @@
 import React from "react";
 
-const Row = ({ row, columns, aggregator }) => {
-  if (columns && columns.length) {
+const Row = ({ row, colNames, aggregator }) => {
+  if (colNames && colNames.length) {
     // header row
     return (
       <tr>
         <th>Category</th>
-        {columns.map((header, index) => (
+        {colNames.map((header, index) => (
           <th key={`th-${index}`}>{header}</th>
         ))}
       </tr>
@@ -16,7 +16,6 @@ const Row = ({ row, columns, aggregator }) => {
     return (
       <tr>
         {row.map((item, index) => {
-          console.log(item);
           if (index === 0) {
             return <td key={`td-${index}`}>{item}</td>;
           } else {
