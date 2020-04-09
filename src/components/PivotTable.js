@@ -3,24 +3,24 @@ import Row from "./Row";
 
 const PivotTable = ({
   data,
-  rowNames,
-  colNames,
+  rowKeys,
+  colKeys,
   aggregator = "sum",
   colTotals,
   rowTotals,
   grandTotal,
 }) => {
   const renderHeader = () => {
-    if (!colNames) return null;
+    if (!colKeys) return null;
 
     // assemble row values, pass with header flag
-    const newRow = [...colNames, "TOTAL"];
+    const newRow = [...colKeys, "TOTAL"];
     return <Row row={newRow} header={true} />;
   };
   const renderRows = () => {
-    if (!data || !rowNames || !colNames) return null;
+    if (!data || !rowKeys || !colKeys) return null;
 
-    return rowNames.map((rowName, index) => {
+    return rowKeys.map((rowName, index) => {
       return renderRow(rowName, index);
     });
   };
@@ -28,7 +28,7 @@ const PivotTable = ({
     if (!rowName || !aggregator) return null;
 
     // create data row
-    const dataRow = colNames.map((colName) => {
+    const dataRow = colKeys.map((colName) => {
       return data[rowName][colName][aggregator] || 0;
     });
     // assemble with row name (start of arr) and total (end of arr)
@@ -37,10 +37,10 @@ const PivotTable = ({
     return <Row row={newRow} key={`row-${index}`} />;
   };
   const renderRowTotals = () => {
-    if (!colNames || !colTotals || !grandTotal[aggregator]) return null;
+    if (!colKeys || !colTotals || !grandTotal[aggregator]) return null;
 
     // create data row
-    const dataRow = colNames.map((colName) => {
+    const dataRow = colKeys.map((colName) => {
       return colTotals[colName][aggregator] || 0;
     });
     // assemble with row name (start of arr) and total (end of arr)

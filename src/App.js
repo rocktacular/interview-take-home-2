@@ -9,7 +9,7 @@ import "./App.css";
 // Pivot Table Config
 // could eventually be selectable from dropdowns and moved into state, then recompute the pivot table on change
 const config = {
-  row: "category",
+  row: ["category", "subCategory"],
   column: "region",
   metric: "sales",
   aggregator: "sum",
@@ -44,8 +44,8 @@ function App() {
       ) : (
         <PivotTable
           data={data.summary}
-          rowNames={data.rowNames}
-          colNames={data.colNames}
+          rowKeys={data.rowKeys}
+          colKeys={data.colKeys}
           aggregator={config.aggregator}
           colTotals={data.colTotals}
           rowTotals={data.rowTotals}

@@ -2,26 +2,35 @@
 
 const makePivot = (data, row_pred, col_pred, metric) => {
   const summary = {};
-  const rowNames = [];
-  const colNames = [];
+  const rowKeys = [];
+  const colKeys = [];
   const initialAgg = { sum: 0 }; // enables other aggregators: sum, count, percent of total, etc...
   const colTotals = {};
   const rowTotals = {};
   const grandTotal = { ...initialAgg };
   data.forEach((item) => {
     // TODO: error handling if row_pred, col_pred, or metric don't exist on each item
-    const rowVal = item[row_pred];
+
+    // create combo row key
+    const itemRowKeys = [];
+    row_pred.forEach((pred) => {
+      itemRowKeys.push(item[pred]);
+    });
+
+    const itemRowKeysFlat = itemRowKeys.join("-");
+
+    const rowVal = itemRowKeysFlat;
     const colVal = item[col_pred];
 
     // if row doesnt exist on summary yet
     if (!summary[rowVal]) {
       summary[rowVal] = {};
-      rowNames.push(rowVal); // push to rowNames array
+      rowKeys.push(rowVal); // push to rowKeys array
     }
     // if row.col doesnt exist on summary yet
     if (!summary[rowVal][colVal]) {
       summary[rowVal][colVal] = { ...initialAgg }; // copy instead of reference
-      colNames.push(colVal); // push to colNames array
+      colKeys.push(colVal); // push to colKeys array
     }
 
     // initialize column totals
@@ -42,19 +51,19 @@ const makePivot = (data, row_pred, col_pred, metric) => {
     grandTotal.sum += item[metric];
   });
 
-  // make colNames unique using Set
+  // make colKeys unique using Set
   const summaryObj = {
     summary,
-    rowNames,
-    colNames: [...new Set(colNames)],
+    rowKeys,
+    colKeys: [...new Set(colKeys)],
     colTotals,
     rowTotals,
     grandTotal,
   };
 
-  // sort rowNames and colNames alpha
-  summaryObj.rowNames = summaryObj.rowNames.sort();
-  summaryObj.colNames = summaryObj.colNames.sort();
+  // sort rowKeys and colKeys alpha
+  summaryObj.rowKeys = summaryObj.rowKeys.sort();
+  summaryObj.colKeys = summaryObj.colKeys.sort();
 
   console.log("summaryObj", summaryObj);
 
