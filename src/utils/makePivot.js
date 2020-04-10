@@ -1,64 +1,97 @@
-// probably need to make this Async in case large data set
+import { set } from "lodash";
 
 const makePivot = (data, row_pred, col_pred, metric) => {
-  const summary = {};
-  const rowNames = [];
-  const colNames = [];
+  const values = {};
+  const rowKeysTree = {};
+  const colKeys = [];
   const initialAgg = { sum: 0 }; // enables other aggregators: sum, count, percent of total, etc...
   const colTotals = {};
   const rowTotals = {};
   const grandTotal = { ...initialAgg };
+
   data.forEach((item) => {
-    // TODO: error handling if row_pred, col_pred, or metric don't exist on each item
-    const rowVal = item[row_pred];
-    const colVal = item[col_pred];
+    // create combo row keys and column keys based on config
+    const itemRowKeys = [];
+    row_pred.forEach((pred) => {
+      itemRowKeys.push(item[pred]);
+    });
 
-    // if row doesnt exist on summary yet
-    if (!summary[rowVal]) {
-      summary[rowVal] = {};
-      rowNames.push(rowVal); // push to rowNames array
+    const rowKey = itemRowKeys.join("-");
+    const colKey = item[col_pred];
+
+    // --------------------------------------------
+    // DATA GRID
+    // if row doesnt exist on values yet
+    if (!values[rowKey]) {
+      values[rowKey] = {};
     }
-    // if row.col doesnt exist on summary yet
-    if (!summary[rowVal][colVal]) {
-      summary[rowVal][colVal] = { ...initialAgg }; // copy instead of reference
-      colNames.push(colVal); // push to colNames array
+    // if row.col doesnt exist on values yet
+    if (!values[rowKey][colKey]) {
+      values[rowKey][colKey] = { ...initialAgg }; // copy instead of reference
+      colKeys.push(colKey);
     }
 
+    // --------------------------------------------
+    // ROW KEYS TREE
+    set(rowKeysTree, [...itemRowKeys], true); // build out row keys hierarchy
+
+    // --------------------------------------------
+    // ROW & COLUMN TOTALS
     // initialize column totals
-    if (!colTotals[colVal]) {
-      colTotals[colVal] = { ...initialAgg };
+    if (!colTotals[colKey]) {
+      colTotals[colKey] = { ...initialAgg };
     }
-
     // initialize row totals
-    if (!rowTotals[rowVal]) {
-      rowTotals[rowVal] = { ...initialAgg };
+    if (!rowTotals[rowKey]) {
+      rowTotals[rowKey] = { ...initialAgg };
     }
 
-    // add metric value to row.col aggregation
-    // SUM
-    summary[rowVal][colVal].sum += item[metric];
-    colTotals[colVal].sum += item[metric];
-    rowTotals[rowVal].sum += item[metric];
+    // initialize subtotal rows & columns if rowDepth > 1
+    const subTotalRowKeys = [...itemRowKeys];
+
+    // TODO: for loop to subtotal across all depths > 1?
+    subTotalRowKeys.pop(); // subtotals for rowDepth - 1
+
+    const subTotalRowKeysFlat = subTotalRowKeys.join("-");
+    const subTotalColKeysFlat = subTotalRowKeysFlat
+      ? subTotalRowKeysFlat + "-" + colKey
+      : undefined;
+    if (subTotalColKeysFlat && !colTotals[subTotalColKeysFlat]) {
+      colTotals[subTotalColKeysFlat] = { ...initialAgg };
+    }
+    if (subTotalRowKeysFlat && !rowTotals[subTotalRowKeysFlat]) {
+      rowTotals[subTotalRowKeysFlat] = { ...initialAgg };
+    }
+
+    // --------------------------------------------
+    // AGGREGATE
+    // add metric value to row.col sum aggregation
+    values[rowKey][colKey].sum += item[metric];
+    colTotals[colKey].sum += item[metric];
+    rowTotals[rowKey].sum += item[metric];
     grandTotal.sum += item[metric];
+
+    // aggregate subtotals
+    if (subTotalColKeysFlat) {
+      colTotals[subTotalColKeysFlat].sum += item[metric];
+    }
+    if (subTotalRowKeysFlat) {
+      rowTotals[subTotalRowKeysFlat].sum += item[metric];
+    }
   });
 
-  // make colNames unique using Set
-  const summaryObj = {
-    summary,
-    rowNames,
-    colNames: [...new Set(colNames)],
+  // --------------------------------------------
+  // ASSEMBLE FINAL OBJECT
+  const valuesObj = {
+    values,
+    rowKeysTree,
+    colKeys: [...new Set(colKeys)].sort(), // make colKeys unique using Set
     colTotals,
     rowTotals,
     grandTotal,
   };
 
-  // sort rowNames and colNames alpha
-  summaryObj.rowNames = summaryObj.rowNames.sort();
-  summaryObj.colNames = summaryObj.colNames.sort();
-
-  console.log("summaryObj", summaryObj);
-
-  return summaryObj;
+  return valuesObj;
 };
 
 export default makePivot;
