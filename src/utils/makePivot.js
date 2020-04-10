@@ -34,11 +34,15 @@ const makePivot = (data, row_pred, col_pred, metric) => {
 
     // --------------------------------------------
     // ROW KEYS TREE
-    // TODO: make this go as deep as itemRowKeys
+    // TODO: make this go as deep as rowDepth
     if (!rowKeysTree[itemRowKeys[0]]) {
       rowKeysTree[itemRowKeys[0]] = {};
     }
-    rowKeysTree[itemRowKeys[0]][itemRowKeys[1]] = true;
+    if (rowDepth === 1) {
+      rowKeysTree[itemRowKeys[0]] = true;
+    } else if (rowDepth === 2) {
+      rowKeysTree[itemRowKeys[0]][itemRowKeys[1]] = true;
+    }
 
     // --------------------------------------------
     // ROW & COLUMN TOTALS

@@ -24,17 +24,26 @@ const PivotTable = ({
     if (!data || !rowKeysTree || !colKeys) return null;
 
     // TODO: make this traverse the data structure to handle any depth
-    const keys = Object.keys(rowKeysTree).sort();
-    return keys.map((rowKey, index) => {
-      const rowSubKeys = Object.keys(rowKeysTree[rowKey]).sort();
-      return [
-        rowSubKeys.map((rowSubKey, index) => {
-          const rowKeyArr = [rowKey, rowSubKey];
-          return renderRow(rowKeyArr, index);
-        }),
-        renderRowSubTotal(rowKey),
-      ];
-    });
+    const rowKeys = Object.keys(rowKeysTree).sort();
+    const rowDepth = config.row.length;
+    if (rowDepth === 2) {
+      // iterate over children and show subtotal row
+      return rowKeys.map((rowKey, index) => {
+        const rowSubKeys = Object.keys(rowKeysTree[rowKey]).sort();
+        return [
+          rowSubKeys.map((rowSubKey, index) => {
+            const rowKeyArr = [rowKey, rowSubKey];
+            return renderRow(rowKeyArr, index);
+          }),
+          renderRowSubTotal(rowKey),
+        ];
+      });
+    } else if (rowDepth === 1) {
+      // iterate only over top level keys
+      return rowKeys.map((rowKey, index) => {
+        return renderRow([rowKey], index);
+      });
+    }
   };
 
   const renderRowSubTotal = (rowKey) => {
@@ -59,8 +68,19 @@ const PivotTable = ({
       return get(data, [rowKey, colName, aggregator], 0);
     });
 
-    // assemble with row name (start of arr) and total (end of arr)
-    const startRow = index === 0 ? rowKeyArr : ["", rowKeyArr[1]];
+    // assemble with group name, row name, data, and total
+    const startRow = [];
+    const rowDepth = config.row.length;
+    if (rowDepth === 2) {
+      if (index === 0) {
+        startRow.push(...rowKeyArr);
+      } else {
+        startRow.push("", rowKeyArr[1]);
+      }
+    } else if (rowDepth === 1) {
+      startRow.push(rowKeyArr[0]);
+    }
+
     const newRow = [...startRow].concat(...dataRow);
     newRow.push(rowTotals[rowKey][aggregator]);
     return <Row row={newRow} key={`row-${index}`} />;
