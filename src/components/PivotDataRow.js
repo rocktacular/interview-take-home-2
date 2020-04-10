@@ -3,12 +3,13 @@ import { get } from "lodash";
 import Row from "./Row";
 
 const PivotDataRow = ({
-  data,
   rowKeyArr,
   index,
+
+  data,
   config,
-  colKeys,
   aggregator,
+  colKeys,
   rowTotals,
 }) => {
   if (!aggregator) return null;

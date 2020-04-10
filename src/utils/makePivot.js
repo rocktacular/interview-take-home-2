@@ -49,7 +49,7 @@ const makePivot = (data, row_pred, col_pred, metric) => {
     // initialize subtotal rows & columns if rowDepth > 1
     const subTotalRowKeys = [...itemRowKeys];
 
-    // TODO: for loop to subtotal across all depths?
+    // TODO: for loop to subtotal across all depths > 1?
     subTotalRowKeys.pop(); // subtotals for rowDepth - 1
 
     const subTotalRowKeysFlat = subTotalRowKeys.join("-");

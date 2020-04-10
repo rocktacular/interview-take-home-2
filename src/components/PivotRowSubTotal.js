@@ -4,10 +4,10 @@ import Row from "./Row";
 
 const PivotRowSubTotal = ({
   rowKey,
+  aggregator,
   colKeys,
   rowTotals,
   colTotals,
-  aggregator,
 }) => {
   // prepare subtotal row
   const newRow = [`${rowKey} Total`, ""];

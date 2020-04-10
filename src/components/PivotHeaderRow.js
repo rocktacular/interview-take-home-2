@@ -1,7 +1,7 @@
 import React from "react";
 import Row from "./Row";
 
-const PivotHeaderRow = ({ colKeys, config }) => {
+const PivotHeaderRow = ({ config, colKeys }) => {
   if (!colKeys) return null;
 
   // assemble row values, pass with header flag

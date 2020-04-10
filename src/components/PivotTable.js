@@ -18,7 +18,7 @@ const PivotTable = ({
   const renderRowGroups = () => {
     if (!data || !rowKeysTree || !colKeys) return null;
 
-    // TODO: make this traverse the data structure to handle any depth
+    // TODO: convert to traverse the data structure to handle any depth
     const rowKeys = Object.keys(rowKeysTree).sort();
     const rowDepth = get(config, "row.length");
     if (rowDepth === 2) {
@@ -26,14 +26,14 @@ const PivotTable = ({
       return rowKeys.map((rowKey, index) => {
         return (
           <PivotRowGroup
+            rowKey={rowKey}
             data={data}
             config={config}
+            aggregator={aggregator}
             rowKeysTree={rowKeysTree}
             colKeys={colKeys}
-            rowKey={rowKey}
             rowTotals={rowTotals}
             colTotals={colTotals}
-            aggregator={aggregator}
             key={`row-group-${index}`}
           />
         );
@@ -43,10 +43,10 @@ const PivotTable = ({
       return rowKeys.map((rowKey, index) => {
         return (
           <PivotDataRow
-            data={data}
-            config={config}
             rowKeyArr={[rowKey]}
             index={index}
+            data={data}
+            config={config}
             aggregator={aggregator}
             colKeys={colKeys}
             rowTotals={rowTotals}
@@ -61,7 +61,7 @@ const PivotTable = ({
     <div>
       <table>
         <thead>
-          <PivotHeaderRow colKeys={colKeys} config={config} />
+          <PivotHeaderRow config={config} colKeys={colKeys} />
         </thead>
         <tbody>
           {renderRowGroups()}

@@ -3,14 +3,15 @@ import PivotDataRow from "./PivotDataRow";
 import PivotRowSubTotal from "./PivotRowSubTotal";
 
 const PivotRowGroup = ({
+  rowKey,
+
   data,
   config,
-  rowKey,
+  aggregator,
   rowKeysTree,
   colKeys,
   rowTotals,
   colTotals,
-  aggregator,
 }) => {
   const rowSubKeys = Object.keys(rowKeysTree[rowKey]).sort();
   // list all sub categories followed by a subtotal row
@@ -19,10 +20,10 @@ const PivotRowGroup = ({
       const rowKeyArr = [rowKey, rowSubKey];
       return (
         <PivotDataRow
-          data={data}
-          config={config}
           rowKeyArr={rowKeyArr}
           index={index}
+          data={data}
+          config={config}
           aggregator={aggregator}
           colKeys={colKeys}
           rowTotals={rowTotals}
@@ -32,10 +33,10 @@ const PivotRowGroup = ({
     }),
     <PivotRowSubTotal
       rowKey={rowKey}
+      aggregator={aggregator}
       colKeys={colKeys}
       rowTotals={rowTotals}
       colTotals={colTotals}
-      aggregator={aggregator}
       key={`subtotal-${rowKey}`}
     />,
   ];
