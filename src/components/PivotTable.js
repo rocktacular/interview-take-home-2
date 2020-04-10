@@ -3,7 +3,7 @@ import Row from "./Row";
 
 const PivotTable = ({
   data,
-  rowKeys,
+  rowKeysTree,
   colKeys,
   aggregator = "sum",
   colTotals,
@@ -18,13 +18,40 @@ const PivotTable = ({
     const newRow = [...config.row, ...colKeys, "Total"];
     return <Row row={newRow} header={true} />;
   };
-  const renderRows = () => {
-    if (!data || !rowKeys || !colKeys) return null;
 
-    return rowKeys.map((rowKeyArr, index) => {
-      return renderRow(rowKeyArr, index);
+  const renderRows = () => {
+    if (!data || !rowKeysTree || !colKeys) return null;
+
+    // TODO: make this traverse the data structure to handle any depth
+    const keys = Object.keys(rowKeysTree).sort();
+    return keys.map((rowKey, index) => {
+      const rowSubKeys = Object.keys(rowKeysTree[rowKey]).sort();
+      return [
+        rowSubKeys.map((rowSubKey, index) => {
+          const rowKeyArr = [rowKey, rowSubKey];
+          return renderRow(rowKeyArr, index);
+        }),
+        renderRowSubTotal(rowKey),
+      ];
     });
   };
+
+  const renderRowSubTotal = (rowKey) => {
+    // prepare subtotal row
+    const newRow = [`${rowKey} Total`, ""];
+
+    const dataRow = colKeys.map((colKey) => {
+      return (
+        (colTotals[rowKey + "-" + colKey] &&
+          colTotals[rowKey + "-" + colKey][aggregator]) ||
+        0
+      );
+    });
+    newRow.push(...dataRow);
+    newRow.push(rowTotals[rowKey][aggregator]);
+    return <Row row={newRow} key={`subtotal-${rowKey}`} />;
+  };
+
   const renderRow = (rowKeyArr, index) => {
     if (!rowKeyArr || !aggregator) return null;
 
@@ -33,11 +60,14 @@ const PivotTable = ({
     const dataRow = colKeys.map((colName) => {
       return (data[rowKey][colName] && data[rowKey][colName][aggregator]) || 0;
     });
+
     // assemble with row name (start of arr) and total (end of arr)
-    const newRow = [...rowKeyArr].concat(...dataRow);
+    const startRow = index === 0 ? rowKeyArr : ["", rowKeyArr[1]];
+    const newRow = [...startRow].concat(...dataRow);
     newRow.push(rowTotals[rowKey][aggregator]);
     return <Row row={newRow} key={`row-${index}`} />;
   };
+
   const renderRowTotals = () => {
     if (!colKeys || !colTotals || !grandTotal[aggregator]) return null;
 
@@ -53,6 +83,7 @@ const PivotTable = ({
     newRow.push(grandTotal[aggregator]);
     return <Row row={newRow} key="col-totals" />;
   };
+
   return (
     <div>
       <table>

@@ -2,7 +2,7 @@
 
 const makePivot = (data, row_pred, col_pred, metric) => {
   const summary = {};
-  const rowKeys = [];
+  const rowKeysTree = {};
   const colKeys = [];
   const initialAgg = { sum: 0 }; // enables other aggregators: sum, count, percent of total, etc...
   const colTotals = {};
@@ -25,12 +25,19 @@ const makePivot = (data, row_pred, col_pred, metric) => {
     // if row doesnt exist on summary yet
     if (!summary[rowVal]) {
       summary[rowVal] = {};
-      rowKeys.push(itemRowKeys); // push to rowKeys array
     }
+
+    // populate rowKeysTree arr
+    // TODO: make this go as deep as itemRowKeys
+    if (!rowKeysTree[itemRowKeys[0]]) {
+      rowKeysTree[itemRowKeys[0]] = {};
+    }
+    rowKeysTree[itemRowKeys[0]][itemRowKeys[1]] = true;
+
     // if row.col doesnt exist on summary yet
     if (!summary[rowVal][colVal]) {
       summary[rowVal][colVal] = { ...initialAgg }; // copy instead of reference
-      colKeys.push(colVal); // push to colKeys array
+      colKeys.push(colVal);
     }
 
     // initialize column totals
@@ -46,6 +53,9 @@ const makePivot = (data, row_pred, col_pred, metric) => {
       if (!colTotals[subTotalKeysFlat]) {
         colTotals[subTotalKeysFlat] = { ...initialAgg };
       }
+      if (!rowTotals[itemRowKeys[0]]) {
+        rowTotals[itemRowKeys[0]] = { ...initialAgg };
+      }
     }
 
     // initialize row totals
@@ -58,6 +68,7 @@ const makePivot = (data, row_pred, col_pred, metric) => {
     summary[rowVal][colVal].sum += item[metric];
     colTotals[colVal].sum += item[metric];
     rowTotals[rowVal].sum += item[metric];
+    rowTotals[itemRowKeys[0]].sum += item[metric];
     grandTotal.sum += item[metric];
     // agg subtotals if depth > 1
     if (subTotalKeysFlat && itemRowKeys.length > 1) {
@@ -68,15 +79,14 @@ const makePivot = (data, row_pred, col_pred, metric) => {
   // make colKeys unique using Set
   const summaryObj = {
     summary,
-    rowKeys,
+    rowKeysTree,
     colKeys: [...new Set(colKeys)],
     colTotals,
     rowTotals,
     grandTotal,
   };
 
-  // sort rowKeys and colKeys alpha
-  summaryObj.rowKeys = summaryObj.rowKeys.sort();
+  // sort colKeys alpha
   summaryObj.colKeys = summaryObj.colKeys.sort();
 
   return summaryObj;

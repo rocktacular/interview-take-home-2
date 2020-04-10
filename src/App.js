@@ -46,7 +46,7 @@ function App() {
       ) : (
         <PivotTable
           data={data.summary}
-          rowKeys={data.rowKeys}
+          rowKeysTree={data.rowKeysTree}
           colKeys={data.colKeys}
           aggregator={config.aggregator}
           colTotals={data.colTotals}
