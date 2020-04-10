@@ -1,6 +1,8 @@
 import React from "react";
 import { get } from "lodash";
 import Row from "./Row";
+import PivotHeaderRow from "./PivotHeaderRow";
+import PivotFooterRow from "./PivotFooterRow";
 
 const PivotTable = ({
   data,
@@ -105,8 +107,19 @@ const PivotTable = ({
   return (
     <div>
       <table>
-        <thead>{renderHeader()}</thead>
-        <tbody>{[renderRowGroups(), renderRowTotals()]}</tbody>
+        <thead>
+          <PivotHeaderRow colKeys={colKeys} config={config} />
+        </thead>
+        <tbody>
+          {renderRowGroups()}
+          <PivotFooterRow
+            config={config}
+            colKeys={colKeys}
+            colTotals={colTotals}
+            grandTotal={grandTotal}
+            aggregator={aggregator}
+          />
+        </tbody>
       </table>
     </div>
   );
