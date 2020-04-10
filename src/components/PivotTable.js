@@ -1,9 +1,8 @@
 import React from "react";
-import { get } from "lodash";
-import Row from "./Row";
 import PivotHeaderRow from "./PivotHeaderRow";
 import PivotFooterRow from "./PivotFooterRow";
 import PivotDataRow from "./PivotDataRow";
+import PivotRowSubTotal from "./PivotRowSubTotal";
 
 const PivotTable = ({
   data,
@@ -40,7 +39,13 @@ const PivotTable = ({
               />
             );
           }),
-          renderRowSubTotal(rowKey),
+          <PivotRowSubTotal
+            rowKey={rowKey}
+            colKeys={colKeys}
+            rowTotals={rowTotals}
+            colTotals={colTotals}
+            aggregator={aggregator}
+          />,
         ];
       });
     } else if (rowDepth === 1) {
@@ -59,19 +64,6 @@ const PivotTable = ({
         );
       });
     }
-  };
-
-  const renderRowSubTotal = (rowKey) => {
-    // prepare subtotal row
-    const newRow = [`${rowKey} Total`, ""];
-
-    const dataRow = colKeys.map((colKey) => {
-      const flatKey = rowKey + "-" + colKey;
-      return get(colTotals, [flatKey, aggregator], 0);
-    });
-    newRow.push(...dataRow);
-    newRow.push(rowTotals[rowKey][aggregator]);
-    return <Row row={newRow} key={`subtotal-${rowKey}`} />;
   };
 
   return (
