@@ -1,3 +1,15 @@
+### Take Home Test - Pivot Table
+
+Given a set of data, generate a pivot table like Excel or Google Sheets.
+
+Rows, columns, and metrics should be configurable (in code), and the aggregator should be summation.
+
+Support 1 or 2 row parameter, and just 1 column parameter.
+
+Display totals, possibly including column totals, column sub-totals (if 2 params for row), row totals, and the grand total.
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
