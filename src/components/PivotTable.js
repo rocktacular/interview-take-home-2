@@ -1,8 +1,9 @@
 import React from "react";
+import { get } from "lodash";
 import PivotHeaderRow from "./PivotHeaderRow";
 import PivotFooterRow from "./PivotFooterRow";
 import PivotDataRow from "./PivotDataRow";
-import PivotRowSubTotal from "./PivotRowSubTotal";
+import PivotRowGroup from "./PivotRowGroup";
 
 const PivotTable = ({
   data,
@@ -19,34 +20,23 @@ const PivotTable = ({
 
     // TODO: make this traverse the data structure to handle any depth
     const rowKeys = Object.keys(rowKeysTree).sort();
-    const rowDepth = config.row.length;
+    const rowDepth = get(config, "row.length");
     if (rowDepth === 2) {
       // iterate over children and show subtotal row
       return rowKeys.map((rowKey, index) => {
-        const rowSubKeys = Object.keys(rowKeysTree[rowKey]).sort();
-        return [
-          rowSubKeys.map((rowSubKey, index) => {
-            const rowKeyArr = [rowKey, rowSubKey];
-            return (
-              <PivotDataRow
-                data={data}
-                config={config}
-                rowKeyArr={rowKeyArr}
-                index={index}
-                aggregator={aggregator}
-                colKeys={colKeys}
-                rowTotals={rowTotals}
-              />
-            );
-          }),
-          <PivotRowSubTotal
-            rowKey={rowKey}
+        return (
+          <PivotRowGroup
+            data={data}
+            config={config}
+            rowKeysTree={rowKeysTree}
             colKeys={colKeys}
+            rowKey={rowKey}
             rowTotals={rowTotals}
             colTotals={colTotals}
             aggregator={aggregator}
-          />,
-        ];
+            key={`row-group-${index}`}
+          />
+        );
       });
     } else if (rowDepth === 1) {
       // iterate only over top level keys

@@ -21,7 +21,7 @@ const PivotDataRow = ({
 
   // assemble with group name, row name, data, and total
   const startRow = [];
-  const rowDepth = config.row.length;
+  const rowDepth = get(config, "row.length");
   if (rowDepth === 2) {
     if (index === 0) {
       startRow.push(...rowKeyArr);
