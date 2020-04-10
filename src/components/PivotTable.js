@@ -14,14 +14,6 @@ const PivotTable = ({
   grandTotal,
   config,
 }) => {
-  const renderHeader = () => {
-    if (!colKeys) return null;
-
-    // assemble row values, pass with header flag
-    const newRow = [...config.row, ...colKeys, "Total"];
-    return <Row row={newRow} header={true} />;
-  };
-
   const renderRowGroups = () => {
     if (!data || !rowKeysTree || !colKeys) return null;
 
@@ -86,22 +78,6 @@ const PivotTable = ({
     const newRow = [...startRow].concat(...dataRow);
     newRow.push(rowTotals[rowKey][aggregator]);
     return <Row row={newRow} key={`row-${index}`} />;
-  };
-
-  const renderRowTotals = () => {
-    if (!colKeys || !colTotals || !grandTotal[aggregator]) return null;
-
-    // create data row
-    const dataRow = colKeys.map((colName) => {
-      return get(colTotals, [colName, aggregator], 0);
-    });
-
-    // assemble with row name, any spaces, row totals, and grand total
-    const newRow = config.row.map(() => "");
-    newRow[0] = "Grand Total";
-    newRow.push(...dataRow);
-    newRow.push(grandTotal[aggregator]);
-    return <Row row={newRow} key="col-totals" />;
   };
 
   return (
