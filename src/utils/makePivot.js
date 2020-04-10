@@ -8,6 +8,7 @@ const makePivot = (data, row_pred, col_pred, metric) => {
   const colTotals = {};
   const rowTotals = {};
   const grandTotal = { ...initialAgg };
+  const rowDepth = row_pred.length;
 
   data.forEach((item) => {
     // create combo row keys and column keys based on config
@@ -46,13 +47,13 @@ const makePivot = (data, row_pred, col_pred, metric) => {
       colTotals[colKey] = { ...initialAgg };
     }
 
-    // initialize sub total columns if depth > 1
-    const subTotalKeys = [...itemRowKeys];
-    subTotalKeys.pop(); // subtotals for depth - 1
-    const subTotalKeysFlat = subTotalKeys.join("-") + "-" + colKey;
-    if (itemRowKeys.length > 1) {
-      if (!colTotals[subTotalKeysFlat]) {
-        colTotals[subTotalKeysFlat] = { ...initialAgg };
+    // initialize sub total columns if rowDepth > 1
+    const subTotalColKeys = [...itemRowKeys];
+    subTotalColKeys.pop(); // subtotals for rowDepth - 1
+    const subTotalColKeysFlat = subTotalColKeys.join("-") + "-" + colKey;
+    if (rowDepth > 1) {
+      if (!colTotals[subTotalColKeysFlat]) {
+        colTotals[subTotalColKeysFlat] = { ...initialAgg };
       }
       if (!rowTotals[itemRowKeys[0]]) {
         rowTotals[itemRowKeys[0]] = { ...initialAgg };
@@ -73,9 +74,9 @@ const makePivot = (data, row_pred, col_pred, metric) => {
     rowTotals[itemRowKeys[0]].sum += item[metric];
     grandTotal.sum += item[metric];
 
-    // aggregate subtotals if depth > 1
-    if (subTotalKeysFlat && itemRowKeys.length > 1) {
-      colTotals[subTotalKeysFlat].sum += item[metric];
+    // aggregate subtotals if rowDepth > 1
+    if (subTotalColKeysFlat && rowDepth > 1) {
+      colTotals[subTotalColKeysFlat].sum += item[metric];
     }
   });
 
