@@ -10,7 +10,7 @@ import "./App.css";
 // could eventually be selectable from dropdowns and moved into state, then recompute the pivot table on change
 const initConfig = {
   row: ["category", "subCategory"],
-  column: "region",
+  column: "state",
   metric: "sales",
   aggregator: "sum",
 };
