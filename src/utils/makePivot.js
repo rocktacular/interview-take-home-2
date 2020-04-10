@@ -8,7 +8,6 @@ const makePivot = (data, row_pred, col_pred, metric) => {
   const colTotals = {};
   const rowTotals = {};
   const grandTotal = { ...initialAgg };
-  const rowDepth = row_pred.length;
 
   data.forEach((item) => {
     // create combo row keys and column keys based on config
