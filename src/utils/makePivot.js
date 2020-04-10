@@ -1,5 +1,3 @@
-// probably need to make this Async in case large data set
-
 const makePivot = (data, row_pred, col_pred, metric) => {
   const values = {};
   const rowKeysTree = {};
