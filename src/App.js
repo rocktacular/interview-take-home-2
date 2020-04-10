@@ -45,7 +45,7 @@ function App() {
         <h1>LOADING</h1>
       ) : (
         <PivotTable
-          data={data.summary}
+          data={data.values}
           rowKeysTree={data.rowKeysTree}
           colKeys={data.colKeys}
           aggregator={config.aggregator}

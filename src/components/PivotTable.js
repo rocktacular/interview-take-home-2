@@ -1,4 +1,5 @@
 import React from "react";
+import { get } from "lodash";
 import Row from "./Row";
 
 const PivotTable = ({
@@ -19,7 +20,7 @@ const PivotTable = ({
     return <Row row={newRow} header={true} />;
   };
 
-  const renderRows = () => {
+  const renderRowGroups = () => {
     if (!data || !rowKeysTree || !colKeys) return null;
 
     // TODO: make this traverse the data structure to handle any depth
@@ -41,11 +42,8 @@ const PivotTable = ({
     const newRow = [`${rowKey} Total`, ""];
 
     const dataRow = colKeys.map((colKey) => {
-      return (
-        (colTotals[rowKey + "-" + colKey] &&
-          colTotals[rowKey + "-" + colKey][aggregator]) ||
-        0
-      );
+      const flatKey = rowKey + "-" + colKey;
+      return get(colTotals, [flatKey, aggregator], 0);
     });
     newRow.push(...dataRow);
     newRow.push(rowTotals[rowKey][aggregator]);
@@ -58,7 +56,7 @@ const PivotTable = ({
     // create data row
     const rowKey = rowKeyArr.join("-");
     const dataRow = colKeys.map((colName) => {
-      return (data[rowKey][colName] && data[rowKey][colName][aggregator]) || 0;
+      return get(data, [rowKey, colName, aggregator], 0);
     });
 
     // assemble with row name (start of arr) and total (end of arr)
@@ -73,7 +71,7 @@ const PivotTable = ({
 
     // create data row
     const dataRow = colKeys.map((colName) => {
-      return colTotals[colName][aggregator] || 0;
+      return get(colTotals, [colName, aggregator], 0);
     });
 
     // assemble with row name, any spaces, row totals, and grand total
@@ -88,7 +86,7 @@ const PivotTable = ({
     <div>
       <table>
         <thead>{renderHeader()}</thead>
-        <tbody>{[renderRows(), renderRowTotals()]}</tbody>
+        <tbody>{[renderRowGroups(), renderRowTotals()]}</tbody>
       </table>
     </div>
   );
