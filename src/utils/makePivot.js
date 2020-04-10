@@ -42,23 +42,24 @@ const makePivot = (data, row_pred, col_pred, metric) => {
     if (!colTotals[colKey]) {
       colTotals[colKey] = { ...initialAgg };
     }
+    // initialize row totals
+    if (!rowTotals[rowKey]) {
+      rowTotals[rowKey] = { ...initialAgg };
+    }
 
-    // initialize sub total columns if rowDepth > 1
-    const subTotalColKeys = [...itemRowKeys];
-    subTotalColKeys.pop(); // subtotals for rowDepth - 1
-    const subTotalColKeysFlat = subTotalColKeys.join("-") + "-" + colKey;
+    // initialize subtotal rows & columns if rowDepth > 1
+    const subTotalRowKeys = [...itemRowKeys];
+    // for loop to keep popping?
+    subTotalRowKeys.pop(); // subtotals for rowDepth - 1
+    const subTotalRowKeysFlat = subTotalRowKeys.join("-");
+    const subTotalColKeysFlat = subTotalRowKeysFlat + "-" + colKey;
     if (rowDepth > 1) {
       if (!colTotals[subTotalColKeysFlat]) {
         colTotals[subTotalColKeysFlat] = { ...initialAgg };
       }
-      if (!rowTotals[itemRowKeys[0]]) {
-        rowTotals[itemRowKeys[0]] = { ...initialAgg };
+      if (!rowTotals[subTotalRowKeysFlat]) {
+        rowTotals[subTotalRowKeysFlat] = { ...initialAgg };
       }
-    }
-
-    // initialize row totals
-    if (!rowTotals[rowKey]) {
-      rowTotals[rowKey] = { ...initialAgg };
     }
 
     // --------------------------------------------
@@ -67,7 +68,7 @@ const makePivot = (data, row_pred, col_pred, metric) => {
     values[rowKey][colKey].sum += item[metric];
     colTotals[colKey].sum += item[metric];
     rowTotals[rowKey].sum += item[metric];
-    rowTotals[itemRowKeys[0]].sum += item[metric];
+    rowTotals[subTotalRowKeysFlat].sum += item[metric];
     grandTotal.sum += item[metric];
 
     // aggregate subtotals if rowDepth > 1
