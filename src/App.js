@@ -46,13 +46,13 @@ function App() {
       ) : (
         <PivotTable
           data={data.values}
+          config={config}
+          aggregator={config.aggregator}
           rowKeysTree={data.rowKeysTree}
           colKeys={data.colKeys}
-          aggregator={config.aggregator}
-          colTotals={data.colTotals}
           rowTotals={data.rowTotals}
+          colTotals={data.colTotals}
           grandTotal={data.grandTotal}
-          config={config}
         />
       )}
     </div>

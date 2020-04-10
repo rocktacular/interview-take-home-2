@@ -7,13 +7,13 @@ import PivotRowGroup from "./PivotRowGroup";
 
 const PivotTable = ({
   data,
+  config,
+  aggregator = "sum",
   rowKeysTree,
   colKeys,
-  aggregator = "sum",
-  colTotals,
   rowTotals,
+  colTotals,
   grandTotal,
-  config,
 }) => {
   const renderRowGroups = () => {
     if (!data || !rowKeysTree || !colKeys) return null;
