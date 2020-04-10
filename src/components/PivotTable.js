@@ -50,6 +50,7 @@ const PivotTable = ({
             aggregator={aggregator}
             colKeys={colKeys}
             rowTotals={rowTotals}
+            key={`row-${rowKey}`}
           />
         );
       });
